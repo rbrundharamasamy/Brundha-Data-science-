@@ -1,0 +1,654 @@
+# For analysis and cleaning
+import pandas as pd
+import numpy as np
+# for visaluatztion
+import matplotlib.pyplot as plt
+import seaborn as sns
+# Load data
+df = pd.read_csv("/sentiment_analysis.py.csv")
+df=pd.read_csv('/sentiment_analysis.py.csv')
+df.head()
+df.shape
+df.drop(columns='Unnamed: 0.1',inplace = True)
+# Rename column Unnamed: 0 to id
+df.rename(columns={'Unnamed: 0':'Id'},inplace=True)
+df.isnull().sum()
+df.dtypes
+df['Timestamp'] = pd.to_datetime(df['Timestamp'])
+df['Day'] = df['Timestamp'].dt.day
+df['Month'] = df['Timestamp'].dt.month
+df['Year'] = df['Timestamp'].dt.year
+df['Text']= df['Text'].str.strip()
+df['Sentiment']= df['Sentiment'].str.strip()
+df['User']= df['User'].str.strip()
+df['Platform']= df['Platform'].str.strip()
+df['Hashtags']= df['Hashtags'].str.strip()
+df['Country']= df['Country'].str.strip()
+df.head(1)
+df['Sentiment'].value_counts().nlargest(10).plot(kind='bar')
+plt.title('Top 10 Sentiments based on Text')
+plt.xlabel('Sentiment')
+plt.ylabel('Count')
+plt.show()
+df['Platform'].value_counts()
+df['Platform'].value_counts().plot(kind='pie', autopct='%1.1f%%')
+plt.title('Percentages of Platforms')
+plt.legend()
+plt.show()
+# Descrip data nurimucal
+df.describe()
+numerical_columns = df[['Day', 'Month', 'Year', 'Likes', 'Retweets']]
+
+for col in numerical_columns.columns:
+    print(f"Minimum {col}: {df[col].min()} | Maximum {col}: {df[col].max()}")
+top_likes_platform = df.groupby('Platform')['Likes'].sum().nlargest(10)
+top_likes_platform.plot(kind='bar')
+plt.title('Top Platforms by Total Likes')
+plt.xlabel('Platform')
+plt.ylabel('Total Likes')
+plt.show()
+top_country_likes=df.groupby('Country')['Likes'].sum().nlargest(10)
+top_country_likes.plot(kind='bar')
+plt.title('Top country likes')
+plt.xlabel('Country')
+plt.ylabel('count')
+plt.show()
+Facebook=df[df['Platform']=='Facebook']
+Twitter=df[df['Platform']=='Twitter']
+Instagram=df[df['Platform']=='Instagram']
+H_R_f=Facebook.groupby('Hashtags')['Retweets'].max().nlargest(10).sort_values(ascending=False)
+H_R_f.plot(kind='bar')
+plt.title('Top 10 hashtags retweeted in $/ Facebook $/')
+plt.xlabel('Hashtags')
+plt.ylabel('count')
+plt.show()
+top_likes_platform_F = Facebook.groupby('User')['Likes'].sum().nlargest(10)
+top_likes_platform_F.plot(kind='bar')
+plt.title('Top Users by Total Likes IN Facebook')
+plt.xlabel('User')
+plt.ylabel('Total Likes')
+plt.show()
+f = Facebook.groupby('Year')['Retweets'].sum().reset_index()
+plt.figure(figsize=(10, 6))
+sns.lineplot(data=f, x='Year', y='Retweets', marker='o')
+for index, value in f.iterrows():
+    plt.text(value['Year'], value['Retweets'], str(value['Retweets']), ha='left', va='bottom')
+
+plt.title('Cumulative Retweets Over Years on Facebook')
+plt.xlabel('Year')
+plt.ylabel('Cumulative Retweets')
+
+plt.show()
+H_R_t=Twitter.groupby('Hashtags')['Retweets'].max().nlargest(10).sort_values(ascending=False)
+H_R_t.plot(kind='bar')
+plt.title('Top 10 hashtags retweeted in $/ Twitter $/')
+plt.xlabel('Hashtags')
+plt.ylabel('count')
+plt.show()
+top_likes_platform_t = Twitter.groupby('User')['Likes'].sum().nlargest(10)
+top_likes_platform_t.plot(kind='bar')
+plt.title('Top Users by Total Likes IN Twitter')
+plt.xlabel('User')
+plt.ylabel('Total Likes')
+plt.show()
+f = Twitter.groupby('Year')['Likes'].sum().reset_index()
+plt.figure(figsize=(10, 6))
+sns.lineplot(data=f, x='Year', y='Likes', marker='o')
+for index, value in f.iterrows():
+    plt.text(value['Year'], value['Likes'], str(value['Likes']), ha='left', va='bottom')
+
+plt.title('Cumulative Likes Over Years on Twitter')
+plt.xlabel('Year')
+plt.ylabel('Cumulative Likes')
+
+plt.show()
+H_R_i=Instagram.groupby('Hashtags')['Retweets'].max().nlargest(15).sort_values(ascending=False)
+H_R_i.plot(kind='bar')
+plt.title('Top 15 hashtags retweeted in $/ Instagram $/')
+plt.xlabel('Hashtags')
+plt.ylabel('count')
+plt.show()
+top_likes_platform_i = Instagram.groupby('User')['Likes'].sum().nlargest(10)
+top_likes_platform_i.plot(kind='bar')
+plt.title('Top Users by Total Likes IN Instagram')
+plt.xlabel('User')
+plt.ylabel('Total Likes')
+plt.show()
+f = Instagram.groupby('Year')['Likes'].sum().reset_index()
+plt.figure(figsize=(10, 6))
+sns.lineplot(data=f, x='Year', y='Likes', marker='o')
+for index, value in f.iterrows():
+    plt.text(value['Year'], value['Likes'], str(value['Likes']), ha='left', va='bottom')
+
+plt.title('Cumulative Likes Over Years on Instagram')
+plt.xlabel('Year')
+plt.ylabel('Cumulative Likes')
+
+plt.show()
+f = Instagram.groupby('Year')['Retweets'].sum().reset_index()
+plt.figure(figsize=(10, 6))
+sns.lineplot(data=f, x='Year', y='Retweets', marker='o')
+for index, value in f.iterrows():
+    plt.text(value['Year'], value['Retweets'], str(value['Retweets']), ha='left', va='bottom')
+
+plt.title('Cumulative Retweets Over Years on Instagram')
+plt.xlabel('Year')
+plt.ylabel('Cumulative Retweets')
+
+plt.show()
+top_likes_platform = df.groupby('Platform')['Likes'].sum().nlargest(10)
+top_likes_platform.plot(kind='bar')
+plt.title('Top Platforms by Total Likes')
+plt.xlabel('Platform')
+plt.ylabel('Total Likes')
+plt.show()
+top_country_likes=df.groupby('Country')['Likes'].sum().nlargest(10)
+top_country_likes.plot(kind='bar')
+plt.title('Top country likes')
+plt.xlabel('Country')
+plt.ylabel('count')
+plt.show()
+import pandas as pd
+
+# Sample data for social media posts
+data = {
+    'text': [
+        "I am so happy with my life today!",
+        "Feeling very sad and down.",
+        "This is the best day ever!",
+        "I'm so angry at everything right now.",
+        "Totally surprised by the results!"
+    ],
+    'platform': ['Twitter', 'Facebook', 'Twitter', 'Facebook', 'Twitter'],
+    'likes': [120, 45, 210, 5, 130],
+    'country': ['USA', 'India', 'UK', 'Canada', 'USA'],
+    'hour': [14, 9, 18, 22, 7],
+    'emotion': ['joy', 'sadness', 'joy', 'anger', 'surprise']  # ✅ This is our target
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Identify the target and features
+target = 'emotion'
+features = df.columns.drop(target)
+
+# Output
+print("Target:", target)
+print("Features:", list(features))
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Sample data for social media posts
+data = {
+    'text': [
+        "I am so happy with my life today!",
+        "Feeling very sad and down.",
+        "This is the best day ever!",
+        "I'm so angry at everything right now.",
+        "Totally surprised by the results!"
+    ],
+    'platform': ['Twitter', 'Facebook', 'Twitter', 'Facebook', 'Twitter'],
+    'likes': [120, 45, 210, 5, 130],
+    'country': ['USA', 'India', 'UK', 'Canada', 'USA'],
+    'hour': [14, 9, 18, 22, 7],
+    'emotion': ['joy', 'sadness', 'joy', 'anger', 'surprise']  # Target column
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# 1. One-Hot Encoding for 'platform' and 'country'
+df_encoded = pd.get_dummies(df, columns=['platform', 'country'])
+
+# 2. Label Encoding for 'emotion'
+label_encoder = LabelEncoder()
+df_encoded['emotion'] = label_encoder.fit_transform(df_encoded['emotion'])
+
+# Display the result
+print("Transformed DataFrame:")
+print(df_encoded)
+import pandas as pd
+
+# Sample data
+data = {
+    'text': [
+        "Great service and very satisfied.",
+        "Totally disappointed with the product.",
+        "Amazing experience!",
+        "Not happy with the support.",
+        "Fast delivery, will buy again!"
+    ],
+    'platform': ['Twitter', 'Facebook', 'Twitter', 'Facebook', 'Twitter'],
+    'country': ['USA', 'India', 'UK', 'Canada', 'USA']
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Display original DataFrame
+print("Original DataFrame:\n")
+print(df)
+
+# Apply One-Hot Encoding to 'platform' and 'country'
+df_encoded = pd.get_dummies(df, columns=['platform', 'country'])
+
+# Display encoded DataFrame
+print("\nOne-Hot Encoded DataFrame:\n")
+print(df_encoded)
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Sample Data
+data = {
+    'likes': [120, 45, 210, 5, 130],
+    'hour': [14, 9, 18, 22, 7]
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+print("Original Data:\n")
+print(df)
+
+# Initialize StandardScaler
+scaler = StandardScaler()
+
+# Fit and transform the data
+scaled_data = scaler.fit_transform(df)
+
+# Create a DataFrame with scaled values
+df_scaled = pd.DataFrame(scaled_data, columns=['likes_scaled', 'hour_scaled'])
+
+# Display Scaled Data
+print("\nScaled Data (StandardScaler):\n")
+print(df_scaled)
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+# Sample data
+data = {
+    'likes': [120, 45, 210, 5, 130],
+    'hour': [14, 9, 18, 22, 7],
+    'emotion': ['joy', 'sadness', 'joy', 'anger', 'surprise']  # target
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Define features (X) and target (y)
+X = df[['likes', 'hour']]
+y = df['emotion']
+
+# Split the data (80% training, 20% testing)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Show results
+print("Training Features:\n", X_train)
+print("\nTraining Labels:\n", y_train)
+print("\nTesting Features:\n", X_test)
+print("\nTesting Labels:\n", y_test)
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+
+# 1. Sample data
+data = {
+    "comment": [
+        "I love this!",
+        "This is horrible",
+        "Not sure how I feel",
+        "Absolutely amazing experience",
+        "Worst service ever",
+        "It was okay, not great",
+        "I hate it",
+        "I like the new design",
+        "Terrible product",
+        "Pretty decent"
+    ],
+    "sentiment": [
+        "Positive",
+        "Negative",
+        "Neutral",
+        "Positive",
+        "Negative",
+        "Neutral",
+        "Negative",
+        "Positive",
+        "Negative",
+        "Neutral"
+    ]
+}
+
+df = pd.DataFrame(data)
+
+# 2. Preprocessing (basic)
+stop_words = set(stopwords.words('english'))
+
+def preprocess(text):
+    return ' '.join([word.lower() for word in text.split() if word.lower() not in stop_words])
+
+df['clean'] = df['comment'].apply(preprocess)
+
+# 3. Vectorization
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(df['clean'])
+y = df['sentiment']
+
+# 4. Split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# 5. Model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# 6. Prediction & Output
+y_pred = model.predict(X_test)
+
+print("=== Classification Report ===")
+print(classification_report(y_test, y_pred))
+
+# 7. Try on new comments
+test_comments = ["I love it", "What a waste of time", "It's just fine"]
+test_clean = [preprocess(text) for text in test_comments]
+test_vect = vectorizer.transform(test_clean)
+preds = model.predict(test_vect)
+
+print("\n=== Sample Predictions ===")
+for comment, pred in zip(test_comments, preds):
+    print(f"'{comment}' → {pred}")
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# 1. Sample Dataset
+data = {
+    "comment": [
+        "I love this!",
+        "This is horrible",
+        "Not sure how I feel",
+        "Absolutely amazing experience",
+        "Worst service ever",
+        "It was okay, not great",
+        "I hate it",
+        "I like the new design",
+        "Terrible product",
+        "Pretty decent"
+    ],
+    "sentiment": [
+        "Positive",
+        "Negative",
+        "Neutral",
+        "Positive",
+        "Negative",
+        "Neutral",
+        "Negative",
+        "Positive",
+        "Negative",
+        "Neutral"
+    ]
+}
+df = pd.DataFrame(data)
+
+# 2. Vectorize text
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(df['comment'])
+y = df['sentiment']
+
+# 3. Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# 4. Model training
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# 5. Predictions
+y_pred = model.predict(X_test)
+
+# 6. Evaluation
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", round(accuracy * 100, 2), "%\n")
+
+print("Classification Report:\n")
+print(classification_report(y_test, y_pred))
+
+# 7. Confusion Matrix
+cm = confusion_matrix(y_test, y_pred, labels=["Positive", "Neutral", "Negative"])
+sns.heatmap(cm, annot=True, fmt='d', xticklabels=["Positive", "Neutral", "Negative"],
+            yticklabels=["Positive", "Neutral", "Negative"], cmap='Blues')
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Confusion Matrix")
+plt.show()
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import LabelEncoder
+
+# Sample data
+data = {
+    'likes': [120, 45, 210, 5, 130],
+    'hour': [14, 9, 18, 22, 7],
+    'emotion': ['joy', 'sadness', 'joy', 'anger', 'surprise']  # target
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Encode the target labels
+label_encoder = LabelEncoder()
+df['emotion_encoded'] = label_encoder.fit_transform(df['emotion'])
+
+# Define features and target
+X = df[['likes', 'hour']]
+y = df['emotion_encoded']
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+
+# Train the model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# --- ✅ Make prediction on new input ---
+# New input data: likes=100, hour=10
+new_input = pd.DataFrame({'likes': [100], 'hour': [10]})
+
+# Predict using the trained model
+predicted_class = model.predict(new_input)[0]
+
+# Decode the predicted label back to original emotion
+predicted_emotion = label_encoder.inverse_transform([predicted_class])[0]
+
+# Output result
+print("New Input:")
+print(new_input)
+print("\nPredicted Emotion:", predicted_emotion)
+import pandas as pd
+
+# Example new input from a user (as a dictionary)
+new_input = {
+    'platform': ['Twitter'],
+    'country': ['USA'],
+    'likes': [150],
+    'hour': [15]
+}
+
+# Step 1: Convert dictionary to DataFrame
+new_df = pd.DataFrame(new_input)
+print("Original New Input DataFrame:\n")
+print(new_df)
+
+# Step 2: Assume this is how training data was encoded
+# Simulating One-Hot Encoding used during training
+expected_columns = ['likes', 'hour',
+                    'platform_Facebook', 'platform_Twitter',
+                    'country_Canada', 'country_India', 'country_UK', 'country_USA']
+
+# Step 3: Apply one-hot encoding to new input
+new_encoded = pd.get_dummies(new_df)
+
+# Step 4: Add any missing columns (set them to 0)
+for col in expected_columns:
+    if col not in new_encoded.columns:
+        new_encoded[col] = 0
+
+# Step 5: Ensure correct column order
+new_encoded = new_encoded[expected_columns]
+
+# Step 6: Display the final encoded input
+print("\nEncoded New Input (Ready for Prediction):\n")
+print(new_encoded)
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+# Step 1: Sample student performance data
+data = {
+    'G1': [10, 14, 12, 8, 16],
+    'G2': [11, 15, 13, 7, 17],
+    'studytime': [2, 3, 2, 1, 4],
+    'failures': [0, 0, 1, 2, 0],
+    'absences': [4, 2, 10, 12, 1],
+    'G3': [11, 15, 13, 6, 18]  # Final grade
+}
+
+# Step 2: Convert to DataFrame
+df = pd.DataFrame(data)
+
+# Step 3: Define features and target
+X = df[['G1', 'G2', 'studytime', 'failures', 'absences']]
+y = df['G3']
+
+# Step 4: Train/test split (optional in this small example)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 5: Train the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Step 6: New student input for prediction
+new_student = pd.DataFrame({
+    'G1': [13],
+    'G2': [14],
+    'studytime': [3],
+    'failures': [0],
+    'absences': [3]
+})
+
+# Step 7: Predict final grade (G3)
+predicted_grade = model.predict(new_student)[0]
+print("Predicted Final Grade (G3):", round(predicted_grade, 2))
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+# Step 1: Sample student performance data (like before)
+data = {
+    'G1': [10, 14, 12, 8, 16],
+    'G2': [11, 15, 13, 7, 17],
+    'studytime': [2, 3, 2, 1, 4],
+    'failures': [0, 0, 1, 2, 0],
+    'absences': [4, 2, 10, 12, 1],
+    'G3': [11, 15, 13, 6, 18]  # Final grade
+}
+
+# Step 2: Create DataFrame
+df = pd.DataFrame(data)
+
+# Step 3: Define features and target
+X = df[['G1', 'G2', 'studytime', 'failures', 'absences']]
+y = df['G3']
+
+# Step 4: Train the model (Linear Regression)
+model = LinearRegression()
+model.fit(X, y)
+
+# Step 5: Define the prediction function
+def predict_final_grade(G1, G2, studytime, failures, absences):
+    # Create a DataFrame for the new student input
+    new_student = pd.DataFrame({
+        'G1': [G1],
+        'G2': [G2],
+        'studytime': [studytime],
+        'failures': [failures],
+        'absences': [absences]
+    })
+
+    # Predict the final grade (G3)
+    predicted_grade = model.predict(new_student)[0]
+    return round(predicted_grade, 2)
+
+# Step 6: Test the prediction function with new input
+# Example: Student with G1=13, G2=14, studytime=3, failures=0, absences=2
+predicted_grade = predict_final_grade(13, 14, 3, 0, 2)
+
+# Display the predicted final grade
+print("Predicted Final Grade (G3):", predicted_grade)
+!pip install gradio --upgrade
+import gradio as gr
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+
+
+# Step 1: Sample student performance data
+data = {
+    'G1': [10, 14, 12, 8, 16],
+    'G2': [11, 15, 13, 7, 17],
+    'studytime': [2, 3, 2, 1, 4],
+    'failures': [0, 0, 1, 2, 0],
+    'absences': [4, 2, 10, 12, 1],
+    'G3': [11, 15, 13, 6, 18]  # Final grade
+}
+
+# Step 2: Create DataFrame
+df = pd.DataFrame(data)
+
+# Step 3: Define features and target
+X = df[['G1', 'G2', 'studytime', 'failures', 'absences']]
+y = df['G3']
+
+# Step 4: Train the model (Linear Regression)
+model = LinearRegression()
+model.fit(X, y)
+
+# Step 5: Define the prediction function
+def predict_final_grade(G1, G2, studytime, failures, absences):
+    # Create a DataFrame for the new student input
+    new_student = pd.DataFrame({
+        'G1': [G1],
+        'G2': [G2],
+        'studytime': [studytime],
+        'failures': [failures],
+        'absences': [absences]
+    })
+
+    # Predict the final grade (G3)
+    predicted_grade = model.predict(new_student)[0]
+    return round(predicted_grade, 2)
+
+# Step 6: Build the Gradio Interface
+iface = gr.Interface(
+    fn=predict_final_grade,  # Function that takes inputs and returns the predicted grade
+    inputs=[
+        gr.Number(label="G1 (1st Period Grade)"),
+        gr.Number(label="G2 (2nd Period Grade)"),
+        gr.Slider(minimum=1, maximum=4, value=2, label="Study Time (1=Low, 4=High)"), # Changed 'default' to 'value'
+        gr.Number(label="Failures (Number of Failures)"),
+        gr.Number(label="Absences (Number of Absences)")
+    ],
+    outputs=gr.Textbox(label="Predicted Final Grade (G3)"),
+    live=True  # This will update the prediction as inputs change
+)
+
+# Step 7: Launch the Gradio app
+iface.launch()
